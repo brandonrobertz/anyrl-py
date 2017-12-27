@@ -29,7 +29,7 @@ class BasicRoller(Roller):
         self.min_episodes = min_episodes
         self.min_steps = min_steps
 
-    def rollouts(self):
+    def rollouts(self, render=False):
         """
         Gather episodes until both self.min_episodes and
         self.min_steps are satisfied.
@@ -41,6 +41,12 @@ class BasicRoller(Roller):
             rollout = empty_rollout(states)
             obs = self.env.reset()
             while True:
+                if render is True:
+                    try:
+                        self.env.render()
+                    except Exception as e:
+                        print("Environment render method threw error: %s" % e)
+                        break
                 rollout.observations.append(obs)
                 model_out = self.model.step([obs], states)
                 rollout.model_outs.append(model_out)
